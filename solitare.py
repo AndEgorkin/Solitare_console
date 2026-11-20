@@ -12,10 +12,10 @@ def intro():
     print()
     #input('Press Enter to start!')
 
-def generate_kol():
+def generate_kol(): #kol is deck 
     kol=[]
    
-    for i in range(52):
+    for i in range(52): 
         uniq=False
         while not uniq:
             el=[randint(1,4),randint(1,13),False]
@@ -23,8 +23,7 @@ def generate_kol():
                 uniq=True
         kol.append(el)
     return kol
-def spl_into(kol):
-    kol[0][2]=True
+def spl_into(kol): #s1-7 is main field w1-7 is 4 spaces above t1 and t2 is the flip cards arrays 
     s1=kol[0]
     kol[2][2]=True
     s2=kol[1:3]
@@ -111,7 +110,7 @@ def cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4):
     
     for i in range(len(s1)):
         print(f'{1 if i==0 else ' '} {''.join(map(str, s1[i]))} {''.join(map(str, s2[i]))} {''.join(map(str, s3[i]))} {''.join(map(str, s4[i]))} {''.join(map(str, s5[i]))} {''.join(map(str, s6[i]))} {''.join(map(str, s7[i]))}')
-def DTypeFlipFlop(t1,t2):
+def FlipCard(t1,t2):
     if len(t1)>=1:
         t2.append(t1[-1])
         del t1[-1]
@@ -120,31 +119,33 @@ def DTypeFlipFlop(t1,t2):
         t2.clear()
     return t1,t2
 
+def MoveCard(CrD):
+    pass
 def main():
     intro()
     kol=generate_kol()
     t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4=spl_into(kol)
     
     cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4)
-    
+    s = [s1, s2, s3, s4, s5, s6, s7]
+    w = [w1, w2, w3, w4]
     while True:
-        print('Enter what colum,row do you move& (e.x. "5 5")')
+        print('Enter what colum,row do you move? (e.x. "5 1")')
         while True: 
             try: clm,row=map(int,input().split());break; 
             except ValueError: continue
         if clm==1 and row==0:
-            t1,t2=DTypeFlipFlop(t1,t2)
+            t1,t2=FlipCard(t1,t2)
             if len(t1)>=1: t1[-1][2]=False
             if len(t2)>=1: t2[-1][2]=True        
             
         else: 
-            print('Enter where do you move? (e.x. "5 5")')
+            print('Enter where do you move? (e.x. "5 1")')
             while True:
                 try: toclm, torow=map(int,input().split());break; 
                 except ValueError: continue
             
-            s = [s1, s2, s3, s4, s5, s6, s7]
-            w = [w1, w2, w3, w4]
+
             for i in range(len(s)):
                 if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
             if row==0 and clm==2 and torow!=0:
@@ -156,13 +157,13 @@ def main():
                 am=1
                 if len(t2)==3 and (t2[2] == True or t2[2] == False): t2 = [t2]
                 if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: InternalPointerVariable=True
-                    else: InternalPointerVariable=False
-                else:InternalPointerVariable=False
-                if t2[-am][0]==1 or t2[-am][0]==4: GlobalConstantValue=True
-                else: GlobalConstantValue=False
-                if len(s[toclm])==0: InternalPointerVariable=not(GlobalConstantValue)
-                if clm>=1 and ((len(s[toclm])==0 and t2[-am][1]==13) or ((InternalPointerVariable ^ GlobalConstantValue) and t2[-am][1]+1==s[toclm][-1][1])):
+                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
+                    else: ColourFlag1=False
+                else:ColourFlag1=False
+                if t2[-am][0]==1 or t2[-am][0]==4: ColourFlag2=True
+                else: ColourFlag2=False
+                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
+                if clm>=1 and ((len(s[toclm])==0 and t2[-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and t2[-am][1]+1==s[toclm][-1][1])):
                     s[toclm].extend(t2[-am:])
                     del t2[-am:]
             elif row==0 and torow==0 and clm==2:
@@ -174,12 +175,12 @@ def main():
                 am=1
                 if len(t2)==3 and (t2[2] == True or t2[2] == False): t2 = [t2]
                 if len(w[toclm])>=1:
-                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: InternalPointerVariable=True
-                    else: InternalPointerVariable=False
-                else:InternalPointerVariable=False
-                if t2[-am][0]==1 or t2[-am][0]==4: GlobalConstantValue=True
-                else: GlobalConstantValue=False
-                if len(w[toclm])==0: InternalPointerVariable=not(GlobalConstantValue)
+                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: ColourFlag1=True
+                    else: ColourFlag1=False
+                else:ColourFlag1=False
+                if t2[-am][0]==1 or t2[-am][0]==4: ColourFlag2=True
+                else: ColourFlag2=False
+                if len(w[toclm])==0: ColourFlag1=not(ColourFlag2)
                 if clm>=1 and ((len(w[toclm])==0 and t2[-1][1]==1) or ((w[toclm][-1][0]==t2[-am][0]) and t2[-am][1]-1==w[toclm][-1][1])):
                     w[toclm].extend(t2[-am:])
                     del t2[-am:]
@@ -194,13 +195,13 @@ def main():
                 for i in range(len(w)):
                     if len(w[i])==3 and (w[i][2]==True or w[i][2]==False): w[i][:] = [w[i].copy()]
                 if len(w[toclm])>=1:
-                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: InternalPointerVariable=True
-                    else: InternalPointerVariable=False
-                else:InternalPointerVariable=False
+                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: ColourFlag1=True
+                    else: ColourFlag1=False
+                else:ColourFlag1=False
                 
-                if s[clm][-am][0]==1 or s[clm][-am][0]==4: GlobalConstantValue=True
-                else: GlobalConstantValue=False
-                if len(w[toclm])==0: InternalPointerVariable=not(GlobalConstantValue)
+                if s[clm][-am][0]==1 or s[clm][-am][0]==4: ColourFlag2=True
+                else: ColourFlag2=False
+                if len(w[toclm])==0: ColourFlag1=not(ColourFlag2)
                 if clm>=0 and ((len(w[toclm])==0 and s[clm][-1][1]==1) or ((w[toclm][-1][0]==s[clm][-am][0]) and s[clm][-am][1]-1==w[toclm][-1][1])):
                     w[toclm].extend(s[clm][-am:])
                     del s[clm][-am:]
@@ -215,13 +216,13 @@ def main():
                 for i in range(len(w)):
                     if len(w[i])==3 and (w[i][2]==True or w[i][2]==False): w[i][:] = [w[i].copy()]
                 if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: InternalPointerVariable=True
-                    else: InternalPointerVariable=False
-                else:InternalPointerVariable=False
-                if w[clm][-am][0]==1 or w[clm][-am][0]==4: GlobalConstantValue=True
-                else: GlobalConstantValue=False
-                if len(s[toclm])==0: InternalPointerVariable=not(GlobalConstantValue)
-                if clm>=0 and ((len(s[toclm])==0 and w[clm][-am][1]==13) or ((InternalPointerVariable ^ GlobalConstantValue) and w[clm][-am][1]+1==s[toclm][-1][1])):
+                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
+                    else: ColourFlag1=False
+                else:ColourFlag1=False
+                if w[clm][-am][0]==1 or w[clm][-am][0]==4: ColourFlag2=True
+                else: ColourFlag2=False
+                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
+                if clm>=0 and ((len(s[toclm])==0 and w[clm][-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and w[clm][-am][1]+1==s[toclm][-1][1])):
                     s[toclm].extend(w[clm][-am:])
                     del w[clm][-am:]
             else:
@@ -233,13 +234,13 @@ def main():
                 for i in range(len(s)):
                     if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
                 if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: InternalPointerVariable=True
-                    else: InternalPointerVariable=False
-                else:InternalPointerVariable=False
-                if s[clm][-am][0]==1 or s[clm][-am][0]==4: GlobalConstantValue=True
-                else: GlobalConstantValue=False
-                if len(s[toclm])==0: InternalPointerVariable=not(GlobalConstantValue)
-                if clm>=0 and ((len(s[toclm])==0 and s[clm][-am][1]==13) or ((InternalPointerVariable ^ GlobalConstantValue) and s[clm][-am][1]+1==s[toclm][-1][1])) and s[clm][-am][2]:
+                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
+                    else: ColourFlag1=False
+                else:ColourFlag1=False
+                if s[clm][-am][0]==1 or s[clm][-am][0]==4: ColourFlag2=True
+                else: ColourFlag2=False
+                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
+                if clm>=0 and ((len(s[toclm])==0 and s[clm][-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and s[clm][-am][1]+1==s[toclm][-1][1])) and s[clm][-am][2]:
                     s[toclm].extend(s[clm][-am:])
                     del s[clm][-am:]
                 else:
