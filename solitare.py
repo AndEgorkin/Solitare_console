@@ -119,146 +119,110 @@ def FlipCard(t1,t2):
         t2.clear()
     return t1,t2
 
-def MoveCard(CrD):
-    pass
+def MoveCard(Mfrom,Mto,clm,toclm,st,am):
+    if len(Mfrom)<1:return Mfrom,Mto
+    if Mfrom[-am][0]==1 or Mfrom[-am][0]==4: ColourFlag2=True
+    else: ColourFlag2=False
+    if len(Mto)==0: ColourFlag1=not(ColourFlag2)
+    else:
+        if Mto[-1][0]==1 or Mto[-1][0]==4: ColourFlag1=True
+        else: ColourFlag1=False
+    if st:
+        if len(Mto)==0 and Mfrom[-am][1]!=13: return Mfrom,Mto
+        if ((len(Mto)==0) or ((ColourFlag1 ^ ColourFlag2) and Mfrom[-am][1]+1==Mto[-1][1])) and Mfrom[-am][2]:
+            Mto.extend(Mfrom[-am:])
+            del Mfrom[-am:]
+        else:
+            return Mfrom,Mto
+    else:
+        if len(Mto)==0 and Mfrom[-am][1]!=1: return Mfrom,Mto
+        if (len(Mto)==0) or (((Mto[-1][0]==Mfrom[-am][0]) and Mfrom[-am][1]-1==Mto[-1][1]) and Mfrom[-am][2]):
+            Mto.extend(Mfrom[-am:])
+            del Mfrom[-am:]
+        else:
+            return Mfrom,Mto
+    return Mfrom,Mto
+
 def main():
     intro()
     kol=generate_kol()
     t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4=spl_into(kol)
-    
-    cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4)
     s = [s1, s2, s3, s4, s5, s6, s7]
     w = [w1, w2, w3, w4]
     while True:
+        print()
+        for i in range(len(s)):
+            if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
+        for i in range(len(w)):
+            if len(w[i])==3 and (w[i][2]==True or w[i][2]==False): w[i][:] = [w[i].copy()]
+        if len(t2)==3 and (t2[2] == True or t2[2] == False): t2 = [t2]
+        if len(t1)==3 and (t1[2] == True or t1[2] == False): t1 = [t1]
+        for i in range(len(s)):
+            if len(s[i])>=1:s[i][-1][2]=True
+        cout(kol,t1,t2,s[0],s[1],s[2],s[3],s[4],s[5],s[6],w[0],w[1],w[2],w[3])
         print('Enter what colum,row do you move? (e.x. "5 1")')
         while True: 
-            try: clm,row=map(int,input().split());break; 
+            try: clm,row=map(int,input().split());break; #clm is colum
             except ValueError: continue
         if clm==1 and row==0:
             t1,t2=FlipCard(t1,t2)
             if len(t1)>=1: t1[-1][2]=False
-            if len(t2)>=1: t2[-1][2]=True        
-            
+            if len(t2)>=1: t2[-1][2]=True
+        elif clm==0 and row==0:
+            break        
         else: 
             print('Enter where do you move? (e.x. "5 1")')
             while True:
                 try: toclm, torow=map(int,input().split());break; 
                 except ValueError: continue
-            
 
             for i in range(len(s)):
                 if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
             if row==0 and clm==2 and torow!=0:
                 if toclm not in range(1,8): continue
                 toclm-=1
-                if len(t2)==0:
-                    cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4)
-                    continue
                 am=1
-                if len(t2)==3 and (t2[2] == True or t2[2] == False): t2 = [t2]
-                if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
-                    else: ColourFlag1=False
-                else:ColourFlag1=False
-                if t2[-am][0]==1 or t2[-am][0]==4: ColourFlag2=True
-                else: ColourFlag2=False
-                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
-                if clm>=1 and ((len(s[toclm])==0 and t2[-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and t2[-am][1]+1==s[toclm][-1][1])):
-                    s[toclm].extend(t2[-am:])
-                    del t2[-am:]
+                t2,s[toclm]=MoveCard(t2,s[toclm],clm,toclm,True,am)
             elif row==0 and torow==0 and clm==2:
                 if toclm not in range(4,8): continue
                 toclm-=4
-                if len(t2)==0:
-                    cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4)
-                    continue
+                if len(t2)==0:continue
                 am=1
-                if len(t2)==3 and (t2[2] == True or t2[2] == False): t2 = [t2]
-                if len(w[toclm])>=1:
-                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: ColourFlag1=True
-                    else: ColourFlag1=False
-                else:ColourFlag1=False
-                if t2[-am][0]==1 or t2[-am][0]==4: ColourFlag2=True
-                else: ColourFlag2=False
-                if len(w[toclm])==0: ColourFlag1=not(ColourFlag2)
-                if clm>=1 and ((len(w[toclm])==0 and t2[-1][1]==1) or ((w[toclm][-1][0]==t2[-am][0]) and t2[-am][1]-1==w[toclm][-1][1])):
-                    w[toclm].extend(t2[-am:])
-                    del t2[-am:]
+                t2,w[toclm]=MoveCard(t2,w[toclm],clm,toclm,False,am)
+            elif torow==0 and row==0: continue
             elif torow==0:
                 if toclm not in range(4,8): continue
                 if clm not in range(1,8): continue
                 toclm-=4
                 clm-=1
                 am=1
-                for i in range(len(s)):
-                    if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
-                for i in range(len(w)):
-                    if len(w[i])==3 and (w[i][2]==True or w[i][2]==False): w[i][:] = [w[i].copy()]
-                if len(w[toclm])>=1:
-                    if w[toclm][-1][0]==1 or w[toclm][-1][0]==4: ColourFlag1=True
-                    else: ColourFlag1=False
-                else:ColourFlag1=False
-                
-                if s[clm][-am][0]==1 or s[clm][-am][0]==4: ColourFlag2=True
-                else: ColourFlag2=False
-                if len(w[toclm])==0: ColourFlag1=not(ColourFlag2)
-                if clm>=0 and ((len(w[toclm])==0 and s[clm][-1][1]==1) or ((w[toclm][-1][0]==s[clm][-am][0]) and s[clm][-am][1]-1==w[toclm][-1][1])):
-                    w[toclm].extend(s[clm][-am:])
-                    del s[clm][-am:]
+                s[clm],w[toclm]=MoveCard(s[clm],w[toclm],clm,toclm,False,am)
             elif row==0:
                 if toclm not in range(1,8): continue
                 if clm not in range(4,8): continue
                 toclm-=1
                 clm-=4
                 am=1
-                for i in range(len(s)):
-                    if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
-                for i in range(len(w)):
-                    if len(w[i])==3 and (w[i][2]==True or w[i][2]==False): w[i][:] = [w[i].copy()]
-                if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
-                    else: ColourFlag1=False
-                else:ColourFlag1=False
-                if w[clm][-am][0]==1 or w[clm][-am][0]==4: ColourFlag2=True
-                else: ColourFlag2=False
-                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
-                if clm>=0 and ((len(s[toclm])==0 and w[clm][-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and w[clm][-am][1]+1==s[toclm][-1][1])):
-                    s[toclm].extend(w[clm][-am:])
-                    del w[clm][-am:]
+                w[clm],s[toclm]=MoveCard(w[clm],s[toclm],clm,toclm,True,am)
             else:
                 if toclm not in range(1,8): continue
                 if clm not in range(1,8): continue
                 toclm-=1
                 clm-=1
-                am=int(input('How many cards would you like to take:'))
-                for i in range(len(s)):
-                    if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
-                if len(s[toclm])>=1:
-                    if s[toclm][-1][0]==1 or s[toclm][-1][0]==4: ColourFlag1=True
-                    else: ColourFlag1=False
-                else:ColourFlag1=False
-                if s[clm][-am][0]==1 or s[clm][-am][0]==4: ColourFlag2=True
-                else: ColourFlag2=False
-                if len(s[toclm])==0: ColourFlag1=not(ColourFlag2)
-                if clm>=0 and ((len(s[toclm])==0 and s[clm][-am][1]==13) or ((ColourFlag1 ^ ColourFlag2) and s[clm][-am][1]+1==s[toclm][-1][1])) and s[clm][-am][2]:
-                    s[toclm].extend(s[clm][-am:])
-                    del s[clm][-am:]
-                else:
-                    #nt(1)
-                    pass
-                #else:cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4);continue
-                for i in range(len(s)):
-                    if len(s[i])==3 and (s[i][2]==True or s[i][2]==False): s[i][:] = [s[i].copy()]
-                    #print(i)
-            for i in range(len(s)):
-                if len(s[i])>=1:s[i][-1][2]=True
+                am=input('How many cards would you like to take:')
+                try:
+                    am=int(am)
+                except:
+                    continue
+                if am>len(s[clm]) or am<=0:continue
+                s[clm],s[toclm]=MoveCard(s[clm],s[toclm],clm,toclm,True,am)
+
         if len(w1)+len(w2)+len(w3)+len(w4)==52:
-            break
-        cout(kol,t1,t2,s1,s2,s3,s4,s5,s6,s7,w1,w2,w3,w4)
-    print('GG')
-
-
-
+            break   
+    if len(w1)+len(w2)+len(w3)+len(w4)==52:
+        print('You won!') 
+    else:
+        print('Thanks for playing!')
 
 if __name__=='__main__':
     main()
